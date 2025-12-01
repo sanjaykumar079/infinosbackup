@@ -1,52 +1,332 @@
-@import url('https://fonts.googleapis.com/css2?family=Familjen+Grotesk&family=Noto+Sans:ital,wght@1,100&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+/* Infinos Brand Colors */
+:root {
+  --infinos-orange: #FF6B35;
+  --infinos-dark: #2D2D2D;
+  --infinos-cream: #FFF4E6;
+  --infinos-light-orange: #FF8C61;
+  --infinos-border: #E0E0E0;
+  --infinos-shadow: rgba(255, 107, 53, 0.15);
+  --infinos-dark-shadow: rgba(45, 45, 45, 0.2);
+  --infinos-success: #76ff03;
+  --infinos-gray: #6B7280;
+  --infinos-light-gray: #F3F4F6;
+}
+
+* {
+  font-family: 'Inter', 'Familjen Grotesk', sans-serif;
+}
+
+.main-header {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+  background: linear-gradient(135deg, var(--infinos-cream) 0%, #FFECD1 100%);
+  min-height: 100vh;
+}
+
+.logo {
+  width: 160px;
+  height: 70px;
+  float: left;
+  margin-left: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 4px var(--infinos-shadow));
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 4px 8px var(--infinos-shadow));
+}
+
+.Addbtn {
+  position: relative;
+  top: 8px;
+  left: 24px;
+  padding: 12px 24px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  background: linear-gradient(135deg, var(--infinos-orange) 0%, var(--infinos-light-orange) 100%) !important;
+  box-shadow: 0 4px 12px var(--infinos-shadow) !important;
+  border-radius: 10px !important;
+  text-transform: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.Addbtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--infinos-shadow) !important;
+}
+
+.Addbtn:active {
+  transform: translateY(0);
+}
+
+.devices {
+  margin: 80px 20px 20px 20px;
+  width: 280px;
+  height: 320px;
+  background: white;
+  box-shadow: 0 8px 24px var(--infinos-dark-shadow);
+  border: 2px solid var(--infinos-border);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.devices::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--infinos-orange) 0%, var(--infinos-light-orange) 100%);
+  border-radius: 16px 16px 0 0;
+}
+
+.devices:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 16px 40px var(--infinos-dark-shadow);
+  border-color: var(--infinos-orange);
+}
+
+.devices:active {
+  transform: translateY(-4px) scale(1.01);
+}
+
+.devname {
+  font-family: 'Familjen Grotesk', sans-serif;
+  color: var(--infinos-dark);
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  text-align: center;
+  word-wrap: break-word;
+  line-height: 1.3;
+}
+
+.devices p {
+  margin-bottom: 12px;
+  margin-top: 40px;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: inline-block;
+  width: 100%;
+}
+
+.devices p:nth-child(2) {
+  color: white;
+  background: linear-gradient(135deg, var(--infinos-success) 0%, #5ed903 100%);
+  box-shadow: 0 2px 8px rgba(118, 255, 3, 0.3);
+}
+
+.devices:has(.MuiSwitch-input:not(:checked)) p:nth-child(2) {
+  background: linear-gradient(135deg, var(--infinos-gray) 0%, #4B5563 100%);
+  box-shadow: 0 2px 8px rgba(107, 114, 128, 0.3);
+}
+
+.switch {
+  width: 70px !important;
+  height: 70px !important;
+  margin-top: 16px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.MuiSwitch-root {
+  width: 80px !important;
+  height: 48px !important;
+  padding: 8px !important;
+}
+
+.MuiSwitch-switchBase {
+  padding: 12px !important;
+}
+
+.MuiSwitch-thumb {
+  width: 24px !important;
+  height: 24px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.MuiSwitch-track {
+  border-radius: 24px !important;
+  background-color: var(--infinos-gray) !important;
+}
+
+.Addbtn1 {
+  position: absolute !important;
+  bottom: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: calc(100% - 48px) !important;
+  background: linear-gradient(135deg, var(--infinos-dark) 0%, #1a1a1a 100%) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 10px 20px !important;
+  border-radius: 8px !important;
+  text-transform: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.3s ease !important;
+}
+
+.Addbtn1:hover {
+  background: linear-gradient(135deg, var(--infinos-orange) 0%, var(--infinos-light-orange) 100%) !important;
+  transform: translateX(-50%) translateY(-2px) !important;
+  box-shadow: 0 6px 16px var(--infinos-shadow) !important;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1200px) {
+  .devices {
+    width: 260px;
+    height: 310px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .main-header {
+    padding: 16px;
+  }
+
+  .logo {
+    width: 130px;
+    height: 57px;
+    margin-left: 0;
+  }
+
+  .Addbtn {
+    left: 12px;
+    padding: 10px 20px !important;
+    font-size: 14px !important;
+  }
+
+  .devices {
+    width: calc(50% - 20px);
+    height: 300px;
+    margin: 60px 10px 20px 10px;
+  }
+
+  .devname {
+    font-size: 20px;
+  }
+}
+
 @media screen and (max-width: 600px) {
-    .main-header {
-        max-width: 360px;
-    }
+  .main-header {
+    max-width: 100%;
+    padding: 12px;
+  }
 
-    .logo{
-        width:119px;
-        height:52px ;
-        float:left ;
-        margin-left: 5px;
-    }
+  .logo {
+    width: 119px;
+    height: 52px;
+    margin-left: 5px;
+  }
 
-    .Addbtn{
-        top:5px ;
-        left:50px ;
-        width:143px ;
-        height:31px ;
-        font-size: 12px;
-        background: linear-gradient(180deg, #53e1d9, #0473d9);
-        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    }
+  .Addbtn {
+    top: 5px;
+    left: 8px;
+    width: auto;
+    min-width: 140px;
+    padding: 8px 16px !important;
+    font-size: 12px !important;
+    background: linear-gradient(135deg, var(--infinos-orange) 0%, var(--infinos-light-orange) 100%) !important;
+    box-shadow: 0 4px 8px var(--infinos-shadow) !important;
+  }
 
-    .devices{
-        margin-left: 20px;
-        margin-top:40px ;
-        top: 40px;
-        width:157px ;
-        height:190px ;
-        background: linear-gradient(180deg, #53e1d9, #0473d9);
-        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.25);
-        border: 1px solid black;
-    }
+  .devices {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 70px;
+    width: 100%;
+    max-width: 320px;
+    height: 300px;
+    background: white;
+    box-shadow: 0 8px 20px var(--infinos-dark-shadow);
+    border: 2px solid var(--infinos-border);
+    float: none !important;
+    display: block;
+  }
 
-    .devname{
-        font-family: 'Familjen Grotesk', sans-serif;
-        color: #ffffff;
-        font-size: 20px;
-    }
+  .devname {
+    font-size: 22px;
+    margin-top: 12px;
+  }
 
-    .switch{
-        width:60px ;
-        height:55px ;
-    }
+  .devices p {
+    font-size: 14px;
+    margin-top: 30px;
+  }
 
-    .Addbtn1{
-        top:10px ;
-        left:3px ;
-    }
+  .switch {
+    width: 60px !important;
+    height: 55px !important;
+  }
 
+  .Addbtn1 {
+    bottom: 16px !important;
+    font-size: 12px !important;
+    padding: 8px 16px !important;
+  }
+}
 
+@media screen and (max-width: 400px) {
+  .devices {
+    max-width: 280px;
+  }
+
+  .Addbtn {
+    min-width: 130px;
+    font-size: 11px !important;
+  }
+}
+
+/* Loading and Empty States */
+.devices-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 80px;
+  justify-content: flex-start;
+}
+
+/* Smooth Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.devices {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Focus States for Accessibility */
+.Addbtn:focus,
+.Addbtn1:focus {
+  outline: 3px solid var(--infinos-orange);
+  outline-offset: 2px;
+}
+
+.logo:focus {
+  outline: 3px solid var(--infinos-orange);
+  outline-offset: 4px;
+  border-radius: 8px;
 }
