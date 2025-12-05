@@ -15,12 +15,15 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.4.0",
     "chart.js": "^4.3.0",
+    "framer-motion": "^12.23.25",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
     "lucide-react": "^0.555.0",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.6.0",
+    "react-icons": "^5.5.0",
     "react-router-dom": "^6.11.2",
     "react-scripts": "5.0.1",
     "styled-components": "^5.3.10",
@@ -37,6 +40,12 @@
       "react-app",
       "react-app/jest"
     ]
+  },
+
+  "dependencies": {
+    "react-hot-toast": "^2.4.1",
+    "framer-motion": "^10.16.4",
+    "react-icons": "^4.11.0"
   },
   "browserslist": {
     "production": [
