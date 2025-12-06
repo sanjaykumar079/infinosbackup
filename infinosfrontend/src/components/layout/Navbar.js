@@ -18,7 +18,7 @@ const Navbar = ({ user }) => {
       <div className="navbar-container">
         <div className="navbar-brand" onClick={() => navigate('/')}>
           <img src={logo} alt="INFINOS" className="navbar-logo" />
-          <span className="navbar-title">INFINOS</span>
+          {/* <span className="navbar-title">INFINOS</span> */}
         </div>
 
         <div className="navbar-menu">

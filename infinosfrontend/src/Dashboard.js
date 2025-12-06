@@ -63,7 +63,7 @@ function Dashboard({ user }) {
               Welcome back, {user.user_metadata?.name?.split(' ')[0] || 'User'} 👋
             </h1>
             <p className="dashboard-subtitle">
-              Here's what's happening with your IoT devices today
+              Here's what's happening with your Bags today
             </p>
           </div>
           <Button 

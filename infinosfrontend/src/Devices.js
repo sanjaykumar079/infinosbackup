@@ -1,3 +1,4 @@
+// Updated Devices.js with claiming modal
 import "./Devices.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +17,7 @@ function Devices() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [showClaimModal, setShowClaimModal] = useState(false);
 
   if (localStorage.getItem("open") === "true") {
     localStorage.setItem("open", "false");
@@ -43,6 +45,17 @@ function Devices() {
     init();
   }, []);
 
+  const fetchDevices = async () => {
+    try {
+      const res = await axios.get("/device/my-devices", {
+        params: { ownerId: user.id },
+      });
+      setDevices(res.data);
+    } catch (err) {
+      console.error("Error fetching devices:", err);
+    }
+  };
+
   const changeStatus = (index) => async (event) => {
     const device = devices[index];
     const newStatus = !device.status;
@@ -62,45 +75,12 @@ function Devices() {
     }
   };
 
-  async function AddDevice() {
-    const name = window.prompt("Enter Name of Device");
-    if (!name) {
-      alert("Name of Device cannot be empty");
-      return;
-    }
-
-    try {
-      const newDevice = {
-        name: name,
-        status: false,
-        heating: [],
-        cooling: [],
-        battery: [],
-        safety_low_temp: 0,
-        safety_high_temp: 100,
-        bag_temp: 25,
-        ownerId: user.id,
-      };
-
-      await axios.post("/device/add_device", newDevice);
-
-      const res = await axios.get("/device/my-devices", {
-        params: { ownerId: user.id },
-      });
-      setDevices(res.data);
-    } catch (err) {
-      console.error("Error adding device:", err);
-      alert("Failed to add device. Please try again.");
-    }
-  }
-
   const DownloadLogs = (device) => async (e) => {
     e.stopPropagation();
     
     try {
       const doc = new jsPDF();
       
-      // Add title
       doc.setFontSize(18);
       doc.text(`${device.name} - Device Logs`, 14, 20);
       doc.setFontSize(11);
@@ -108,7 +88,6 @@ function Devices() {
 
       let yPosition = 35;
 
-      // Heater data
       if (device.heating?.length > 0) {
         const heaterRes = await axios.get("/device/get_heaters", {
           params: { heater_ids: device.heating },
@@ -156,7 +135,6 @@ function Devices() {
         }
       }
 
-      // Cooler data
       if (device.cooling?.length > 0) {
         const coolerRes = await axios.get("/device/get_coolers", {
           params: { cooler_ids: device.cooling },
@@ -204,7 +182,6 @@ function Devices() {
         }
       }
 
-      // Battery data
       if (device.battery?.length > 0) {
         const batteryRes = await axios.get("/device/get_batteries", {
           params: { battery_ids: device.battery },
@@ -273,7 +250,7 @@ function Devices() {
           </div>
           <Button
             variant="primary"
-            onClick={AddDevice}
+            onClick={() => setShowClaimModal(true)}
             leftIcon={
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <line x1="12" y1="5" x2="12" y2="19" strokeWidth="2"/>
@@ -281,11 +258,10 @@ function Devices() {
               </svg>
             }
           >
-            Add Device
+            Claim Device
           </Button>
         </div>
 
-        {/* Filters */}
         <div className="devices-filters">
           <div className="search-box">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -323,13 +299,12 @@ function Devices() {
           </div>
         </div>
 
-        {/* Devices Grid */}
         {filteredDevices.length === 0 ? (
           <div className="empty-state">
             <div className="empty-state-icon">
               <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="11" cy="11" r="8"/>
-                <path d="m21 21-4.35-4.35"/>
+                <rect x="5" y="2" width="14" height="20" rx="2"/>
+                <path d="M12 18h.01"/>
               </svg>
             </div>
             <h3 className="empty-state-title">
@@ -338,11 +313,11 @@ function Devices() {
             <p className="empty-state-description">
               {searchTerm || filterStatus !== "all"
                 ? "Try adjusting your search or filters"
-                : "Get started by adding your first device"}
+                : "Claim your first device by entering its code"}
             </p>
             {!searchTerm && filterStatus === "all" && (
-              <Button variant="primary" onClick={AddDevice}>
-                Add Your First Device
+              <Button variant="primary" onClick={() => setShowClaimModal(true)}>
+                Claim Your First Device
               </Button>
             )}
           </div>
@@ -375,6 +350,9 @@ function Devices() {
                 </div>
 
                 <h3 className="device-card-name">{device.name}</h3>
+                <p style={{ fontSize: '12px', color: '#9CA3AF', margin: '0 0 16px 0', fontFamily: 'monospace' }}>
+                  {device.deviceCode}
+                </p>
 
                 <div className="device-card-components">
                   {device.heating?.length > 0 && (
@@ -433,6 +411,141 @@ function Devices() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Claim Device Modal */}
+      {showClaimModal && (
+        <ClaimDeviceModal
+          user={user}
+          onClose={() => setShowClaimModal(false)}
+          onDeviceClaimed={fetchDevices}
+        />
+      )}
+    </div>
+  );
+}
+
+// Claim Device Modal Component
+function ClaimDeviceModal({ user, onClose, onDeviceClaimed }) {
+  const [step, setStep] = useState(1);
+  const [deviceCode, setDeviceCode] = useState('');
+  const [deviceName, setDeviceName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [deviceInfo, setDeviceInfo] = useState(null);
+
+  const verifyCode = async () => {
+    if (!deviceCode.trim()) {
+      setError('Please enter a device code');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.get('http://localhost:4000/device/verify-code', {
+        params: { deviceCode: deviceCode.trim().toUpperCase() }
+      });
+
+      if (response.data.valid) {
+        setDeviceInfo(response.data.device);
+        setStep(2);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Invalid device code');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const claimDevice = async () => {
+    if (!deviceName.trim()) {
+      setError('Please enter a device name');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.post('http://localhost:4000/device/claim', {
+        deviceCode: deviceCode.trim().toUpperCase(),
+        ownerId: user.id,
+        deviceName: deviceName.trim()
+      });
+
+      if (response.data.device) {
+        onDeviceClaimed?.();
+        onClose();
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to claim device');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000,
+      padding: '20px',
+    }}>
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '16px',
+        maxWidth: '500px',
+        width: '100%',
+        maxHeight: '90vh',
+        overflow: 'auto',
+      }}>
+        {/* Modal content here - implementation continues... */}
+        <div style={{ padding: '24px' }}>
+          <h2>Claim Device - Step {step} of 2</h2>
+          {error && <div style={{ color: 'red', marginBottom: '16px' }}>{error}</div>}
+          
+          {step === 1 && (
+            <>
+              <input
+                type="text"
+                placeholder="Enter device code (INF-XXXX-XXXX)"
+                value={deviceCode}
+                onChange={(e) => setDeviceCode(e.target.value.toUpperCase())}
+                style={{ width: '100%', padding: '12px', marginBottom: '16px' }}
+              />
+              <button onClick={verifyCode} disabled={loading}>
+                {loading ? 'Verifying...' : 'Continue'}
+              </button>
+            </>
+          )}
+          
+          {step === 2 && (
+            <>
+              <p>Device verified: {deviceInfo?.deviceCode}</p>
+              <input
+                type="text"
+                placeholder="Enter device name"
+                value={deviceName}
+                onChange={(e) => setDeviceName(e.target.value)}
+                style={{ width: '100%', padding: '12px', marginBottom: '16px' }}
+              />
+              <button onClick={claimDevice} disabled={loading}>
+                {loading ? 'Claiming...' : 'Claim Device'}
+              </button>
+            </>
+          )}
+          
+          <button onClick={onClose} style={{ marginTop: '16px' }}>Cancel</button>
+        </div>
       </div>
     </div>
   );
