@@ -321,3 +321,39 @@ router.get("/alerts", async (req, res) => {
 });
 
 module.exports = router;
+router.get("/all-devices", async (req, res) => {
+  try {
+    const devices = await Device.find({})
+      .sort({ createdAt: -1 });
+    
+    res.status(200).json(devices);
+  } catch (err) {
+    console.error("Error fetching all devices:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+// Get admin statistics
+router.get("/admin-stats", async (req, res) => {
+  try {
+    const allDevices = await Device.find({});
+    
+    const stats = {
+      totalDevices: allDevices.length,
+      onlineDevices: allDevices.filter(d => d.status === true).length,
+      offlineDevices: allDevices.filter(d => d.status === false).length,
+      dualZoneBags: allDevices.filter(d => d.bagType === 'dual-zone').length,
+      heatingOnlyBags: allDevices.filter(d => d.bagType === 'heating-only').length,
+      claimedDevices: allDevices.filter(d => d.isClaimed === true).length,
+      unclaimedDevices: allDevices.filter(d => d.isClaimed === false).length,
+      uniqueOwners: new Set(allDevices.map(d => d.ownerId).filter(Boolean)).size,
+    };
+    
+    res.status(200).json(stats);
+  } catch (err) {
+    console.error("Error fetching admin stats:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+module.exports = router;
