@@ -1,5 +1,5 @@
 import "./Home.css";
-import logo from "./images/logo_black.svg";
+import logo from "./images/logo.jpg";
 import { useNavigate } from "react-router-dom";
 import Button from "./components/ui/Button";
 import Card from "./components/ui/Card";
